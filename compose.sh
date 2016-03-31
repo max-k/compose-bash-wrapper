@@ -89,16 +89,21 @@ function _compose () {
         echo ""
         exit 1
     else
-        docker-compose $@ 2>/dev/null
+        err=0
+        docker-compose $@ 2>.err
         if [ $? -ne 0 ]; then
-            echo ""
-            echo "docker-compose subcommand \`$1\` not found"
-            echo "or invalid docker-compose parameters."
-            echo ""
-            echo "To show docker-compose help, please run \`${0:2} --help\`"
-            echo ""
-            exit 1
+            err=1
+            if [ ! -z "`grep 'No such command' .err`" ]; then
+                echo ""
+                echo "docker-compose subcommand \`$1\` not found"
+                echo "or invalid docker-compose parameters."
+                echo ""
+                echo "To show docker-compose help, please run \`${0:2} --help\`"
+                echo ""
+            fi
         fi
+        rm .err
+        exit $err
     fi
 }
 ## Arguments parsing
