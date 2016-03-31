@@ -32,7 +32,10 @@ Available subcommands :
   sync : Sync enstadm codebase with running python service container
   *    : Any other subcommand will be forwarded to docker-compose
 
-To show docker-compose help, please run \`compose.sh --help`
+This wrapper can only be used with 'version 2' docker-compose.yml
+So, please use service names instead of container names
+
+To show docker-compose help, please run 'compose.sh --help'
 
 ```
 

@@ -45,6 +45,9 @@ function _help () {
     echo "  sync : Sync enstadm codebase with running python service container"
     echo "  *    : Any other subcommand will be forwarded to docker-compose"
     echo ""
+    echo "This wrapper can only be used with 'version 2' docker-compose.yml"
+    echo "So, please use service names instead of container names"
+    echo ""
     echo "To show docker-compose help, please run \`${0:2} --help\`"
     echo ""
     [ -z "$1" ] && exit 1 || exit 0
