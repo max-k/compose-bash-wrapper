@@ -1,10 +1,10 @@
 #! /bin/bash
 ## Configuration
-src="linshare-io-portal"
-subdir="modules"
-dest="/var/www"
-remote="node"
-prefix="ls_"
+src=""
+subdir=""
+dest=""
+remote=""
+prefix=""
 ## Prefix calculation
 if [ -z "$prefix" ]; then
     basedir="$(basename `pwd`)"
