@@ -32,7 +32,40 @@ Available subcommands :
   sync : Sync enstadm codebase with running python service container
   *    : Any other subcommand will be forwarded to docker-compose
 
-To show docker-compose help, please run `compose.sh --help`
+To show docker-compose help, please run \`compose.sh --help`
+
+```
+
+## Configuration
+
+There is no default configuration but it is almost usable without it.
+
+You have to fill configuration variables in the file to enable more features.
+
+### Custom prefix for container names
+
+Default docker-compose naming convention will work out of the box
+
+If you named your containers using a custom prefix, you'll have to specify it
+
+```.bash
+prefix="customprefix"
+```
+
+### Manual code syncronization with a running container
+
+To be able to use sync command, you have to do some extra configuration
+
+* src    : Git root of directory to copy to the container
+* subdir : Subdirectory to copy to the container (relative to src) [optional]
+* dest   : destination directory to overwrite with subdir
+* remote : Remote container to copy to (service name)
+
+```.bash
+src="linshare-io-portal"
+subdir="modules"
+dest="/var/www"
+remote="node"
 ```
 
 ## Limitations
