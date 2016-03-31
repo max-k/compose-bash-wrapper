@@ -1,4 +1,4 @@
-# compose-bash-wrapper
+ compose-bash-wrapper
 Damn simple but useful docker/docker-compose wrapper
 
 ## Why compose.sh
@@ -63,6 +63,8 @@ To be able to use sync command, you have to do some extra configuration
 * subdir : Subdirectory to copy to the container (relative to src) [optional]
 * dest   : destination directory to overwrite with subdir
 * remote : Remote container to copy to (service name)
+
+### Example
 
 ```.bash
 src="linshare-io-portal"
