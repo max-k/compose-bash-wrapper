@@ -36,14 +36,16 @@ function _help () {
     echo "  $0 [subcommand] [params]"
     echo ""
     echo "Available subcommands :"
-    echo "  -h   : Print this help message"
-    echo "  help : Print this help message"
-    echo "  up   : Create all needed resources and start all services"
-    echo "  rm   : Delete all (running or not) services containers"
-    echo "  sh   : Run a shell in a running service container"
-    echo "  dead : Run a shell in a non-running service container"
-    echo "  sync : Sync enstadm codebase with running python service container"
-    echo "  *    : Any other subcommand will be forwarded to docker-compose"
+    echo "  -h    : Print this help message"
+    echo "  help  : Print this help message"
+    echo "  up    : Create all needed resources and start all services"
+    echo "  rm    : Delete all (running or not) services containers"
+    echo "  sh    : Run a shell in a running service container"
+    echo "  dead  : Run a shell in a non-running service container"
+    echo "  sync  : Sync codebase with running service container"
+    echo "  logs  : Show container(s) logs and follow them by default"
+    echo "  clean : Delete volumes related to current docker-compose"
+    echo "  *     : Any other subcommand will be forwarded to docker-compose"
     echo ""
     echo "This wrapper can only be used with 'version 2' docker-compose.yml"
     echo "So, please use service names instead of container names"
@@ -75,6 +77,42 @@ function _sync () {
         echo "  git submodule update"
         echo ""
         exit 1
+    fi
+}
+function _sh () {
+    if [ $# -eq 2 ]; then
+        docker exec -ti paristech-${2} /bin/bash
+    else
+        docker exec -ti paristech-${2} /bin/bash -c "${*:3}"
+    fi
+}
+function _clean () {
+    if [ $(./compose.sh ps | wc -l) -ne 2 ]; then
+        echo "ERROR : Please shutdown your environment first."
+        echo "You can use \`./compose.sh down\` command"
+    else
+        c=$(docker volume ls -qf dangling=true | grep ^${basedir}_* | wc -l )
+        if [ $c -eq 0 ]; then
+            echo "Nothing to delete"
+            exit 0
+        fi
+        echo "This volumes will be deleted"
+        echo "$(docker volume ls -qf dangling=true | grep ^${basedir}_*)"
+        read -r -p "Are you sure ? [y/n] " answer
+        case $answer in
+            y|Y)
+                for volume in $(docker volume ls -qf dangling=true); do
+                    echo $volume | grep ^${basedir}_* 2>&1 > /dev/null
+                    if [ $? -eq 0 ]; then
+                        docker volume rm $volume 2>&1 > /dev/null
+                    fi
+                done
+                echo "Operation completed"
+                exit 0 ;;
+            *)
+                echo "Operation cancelled"
+                exit 0 ;;
+        esac
     fi
 }
 function _compose () {
@@ -112,8 +150,10 @@ function _compose () {
 ## Arguments parsing
 [ -z "$1" ] && _help
 case $1 in
-    sh) docker exec -ti ${prefix}${2} /bin/bash ;;
+    sh) _sh $@ ;;
+    logs) docker-compose logs -f ${@:2} ;;
     dead) docker-compose run --entrypoint /bin/bash ${2} ;;
+    clean) _clean ;;
     sync) _sync ;;
     up) docker-compose up -d ;;
     rm) docker-compose rm -f ${@:2} ;;
