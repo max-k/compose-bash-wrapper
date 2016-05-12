@@ -29,7 +29,9 @@ Available subcommands :
   rm   : Delete all (running or not) services containers
   sh   : Run a shell in a running service container
   dead : Run a shell in a non-running service container
-  sync : Sync enstadm codebase with running python service container
+  sync : Sync codebase with running service container
+  logs  : Show container(s) logs and follow them by default
+  clean : Delete volumes related to current docker-compose
   *    : Any other subcommand will be forwarded to docker-compose
 
 This wrapper can only be used with 'version 2' docker-compose.yml
